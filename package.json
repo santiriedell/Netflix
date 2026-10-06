@@ -1,0 +1,22 @@
+{
+  "name": "bichiflix-frontend",
+  "version": "1.0.0",
+  "description": "Cliente Vue 3 de BichiFlix (Netflix clone)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.7.4",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.38",
+    "vue-router": "^4.4.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.2",
+    "vite": "^5.4.2"
+  }
+}
