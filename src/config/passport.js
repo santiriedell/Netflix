@@ -1,6 +1,13 @@
+import dotenv from 'dotenv';
 import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import User from '../models/User.js';
+
+dotenv.config();
+
+if (!process.env.JWT_SECRET) {
+  throw new Error('Falta JWT_SECRET en el archivo .env');
+}
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

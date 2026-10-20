@@ -1,17 +1,29 @@
 {
-  "name": "bichiflix-frontend",
+  "name": "maqui-app",
   "version": "1.0.0",
-  "description": "Cliente Vue 3 de BichiFlix (Netflix clone)",
+  "description": "Aplicación MAQUI de películas y series",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "api": "node src/index.js",
+    "api:dev": "node --watch src/index.js",
+    "seed": "node src/seed.js"
   },
   "dependencies": {
     "axios": "^1.7.4",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
     "pinia": "^2.1.7",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "vue": "^3.4.38",
     "vue-router": "^4.4.3"
   },

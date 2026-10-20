@@ -1,60 +1,76 @@
-# PibeFlix API
+# MAQUI API
 
 API REST con Express y MongoDB/Mongoose. Incluye catálogo con URLs de imágenes,
 registro, inicio de sesión JWT y una lista personal de películas por usuario.
 
-## Configurar MongoDB Atlas
+## Configurar MongoDB con Compass
 
-1. Crea un proyecto y un cluster en [MongoDB Atlas](https://www.mongodb.com/atlas).
-2. En **Database Access**, crea un usuario de base de datos y guarda su contraseña.
-3. En **Network Access**, autoriza la IP desde la que vas a ejecutar la API. Para
-   desarrollo se puede autorizar tu IP actual; evita `0.0.0.0/0` salvo que sea
-   estrictamente necesario.
-4. En el cluster, pulsa **Connect → Drivers**, copia la URI de conexión y reemplaza
-   `<password>` por la contraseña del usuario de base de datos. Si la contraseña
-   contiene caracteres especiales, codifícala para URL.
-5. Copia `.env.example` como `.env` dentro de `backend` y completa `URI_LINK` y
-   `JWT_SECRET`. No compartas ni subas `.env`; ya está excluido por `.gitignore`.
-6. Para cargar pósters y fondos de películas/series desde TMDb, solicita una API
-   Read Access Token en **TMDb → Settings → API** y agrégalo a `.env` como
-   `TMDB_READ_ACCESS_TOKEN`. No lo pongas en el frontend ni lo compartas.
+1. Instala **MongoDB Community Server** y **MongoDB Compass**. Compass es el cliente
+   gráfico; para una base local, el servidor de MongoDB también debe estar instalado
+   y ejecutándose.
+2. Abre Compass y conecta con `mongodb://127.0.0.1:27017`.
+3. Pulsa **Create Database**. Usa `maquina` como nombre de base y `categories`
+   como nombre de la primera colección.
+4. En la raíz del proyecto, copia `.env.example` a `.env`. La URI local incluida
+   apunta a `maquina`; completa también `JWT_SECRET` con una cadena larga y
+   aleatoria. No compartas ni subas `.env`; está excluido por `.gitignore`.
+5. Desde una terminal en la raíz, ejecuta `npm install` y luego `npm run seed`.
+   El seed crea las colecciones necesarias y carga datos de ejemplo; puedes verlos
+   en Compass actualizando la vista de la base.
+6. Para cargar información desde OMDb, solicita una API key en
+   [omdbapi.com](https://www.omdbapi.com/apikey.aspx) y agrégala a `.env` como
+   `OMDB_API_KEY`. La key solo se usa en el backend/seed; no la pongas en el
+   frontend ni la compartas. También puedes configurar `TMDB_READ_ACCESS_TOKEN`
+   como alternativa si OMDb no encuentra un título.
 
-Ejemplo de configuración (usa tus propios valores):
+Para usar **MongoDB Atlas** en lugar de una instalación local, crea un cluster,
+un usuario de base de datos y autoriza tu IP en **Network Access**. En Compass
+selecciona **Add new connection**, pega la URI de Atlas y conecta. Copia esa misma
+URI en `URI_LINK` del `.env`, sustituyendo `<password>` por la contraseña del
+usuario de base de datos y codificando los caracteres especiales de la contraseña.
+
+Configuración local de ejemplo:
 
 ```env
 PORT=4000
-URI_LINK=mongodb+srv://USUARIO:CLAVE@cluster0.ejemplo.mongodb.net/bichiflix?retryWrites=true&w=majority
+URI_LINK=mongodb://127.0.0.1:27017/maquina
 JWT_SECRET=reemplazar-por-un-secreto-largo-y-aleatorio
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5173
+OMDB_API_KEY=
+# TMDB_READ_ACCESS_TOKEN=
 ```
 
-Atlas crea la base `bichiflix` y sus colecciones al guardar los primeros
-documentos. Las contraseñas de usuarios se guardan con hash bcrypt; el token JWT
+MongoDB crea las colecciones al guardar los primeros documentos. Las contraseñas
+de usuarios se guardan con hash bcrypt; el token JWT
 se devuelve al iniciar sesión o registrarse y se usa para proteger la lista.
 
 ## Instalar y ejecutar
 
-Desde la carpeta `backend`:
+Desde la raíz del proyecto:
 
 ```bash
 npm install
 npm run seed
-npm run dev
+npm run api:dev
 ```
+
+En otra terminal puedes iniciar el frontend con `npm run dev`. La API está
+disponible en `http://localhost:4000`.
 
 El seed agrega las categorías y películas de ejemplo sin borrar usuarios, listas
 ni otros documentos. Solo crea el usuario de demostración si todavía no existe:
-`demo@bichiflix.com` / `miau123`. Cambia o elimina esa cuenta antes de publicar la
+`demo@maqui.local` / `miau123`. Cambia o elimina esa cuenta antes de publicar la
 aplicación.
 
-Si `TMDB_READ_ACCESS_TOKEN` está configurado, el seed busca cada título en TMDb
-y actualiza las imágenes cuando encuentra una coincidencia exacta. Si no hay
-token, conserva las URLs actuales; si una búsqueda falla, informa el problema y
-conserva las imágenes anteriores de ese título. PibeFlix incluye la atribución
-requerida: “This product uses the TMDB API but is not endorsed or certified by
-TMDB.” El uso de imágenes y API está sujeto a los términos y condiciones de
-TMDb.
+Al ejecutar `npm run seed`, OMDb se consulta primero si `OMDB_API_KEY` está
+configurada. Actualiza el póster, sinopsis, año y una categoría compatible; OMDb
+no proporciona fondos, por lo que se conserva el banner existente. Si OMDb no
+encuentra el título, el seed puede probar TMDb cuando `TMDB_READ_ACCESS_TOKEN`
+está configurado. Si ninguna fuente encuentra una coincidencia, conserva los
+datos existentes. Respeta los límites, términos y permisos de uso de cada API.
+Para TMDb se incluye la atribución requerida: “This product uses the TMDB API but
+is not endorsed or certified by TMDB.”
 
 La API queda disponible en `http://localhost:4000`; el frontend Vue usa esa
 dirección por defecto. Si cambias el puerto o publicas la API, configura

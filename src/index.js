@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.json({ ok: true, message: 'Bienvenido a la API de PibeFlix', endpoints: ['/api/movies', '/api/categories', '/api/auth', '/api/users/mylist'] });
+  res.json({ ok: true, message: 'Bienvenido a la API de MAQUI', endpoints: ['/api/movies', '/api/categories', '/api/auth', '/api/users/mylist'] });
 });
 
 app.use('/api/movies', movieRoutes);
